@@ -1,6 +1,6 @@
 <?php
 
-$submitError = $key = "";
+$submitError = $key = $loginResult = "";
 
 function login() {
 	$key = $_POST["key"];
@@ -8,10 +8,10 @@ function login() {
             	if(!isset($_SESSION)) {
         		session_start();
 			$_SESSION['key'] = "$key";
-			print "<br><h1>Successful Login</h1><br><br>";
+			return 1;
 		}
 		else {
-			print "You already have a session running!";
+			return 0;
 		}
 /*        }
         else {
@@ -32,19 +32,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
         else {
                 $password = test_input($_POST["pass"]);
-                login();
+                if(login()) {
+			$loginResult = "<h2>Successful Login!</h2><hr>";
+		}
+		else {
+			$loginResult = "You already have a session running!";
+		}
         }
 }
 
 if(!isset($_SESSION)) { 
 	session_start();
-}
-else {
-	session_unset();
-    	unset($_SESSION);
-	session_destroy();
-	$_SESSION = array();
-    	$_SESSION = [];
 }
 
 
@@ -60,6 +58,7 @@ if(!isset($_SESSION["key"])) {
         print " 
 		<tr>
         	        <td style='text-align:center;'>
+				<center>$loginResult</center>
 				<form method='post' action= "; echo htmlspecialchars($_SERVER["PHP_SELF"]); print">
                         		<br><br>
                         		<label>Developer Key:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
@@ -73,6 +72,27 @@ if(!isset($_SESSION["key"])) {
 }
 else {
 print "
+	<tr>
+                <td>
+                        <br>
+                                <center>$loginResult</center>
+                        <br>
+                </td>
+        </tr>
+	<tr>
+		<td>
+			<br>
+				<center>STATS right here</center>
+			<br>
+		</td>
+	</tr>
+	<tr>
+                <td>
+                        <br>
+                                <hr>
+                        <br>
+                </td>
+        </tr>
 	<tr>
 		<td>
 			<br>
