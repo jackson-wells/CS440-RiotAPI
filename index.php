@@ -1,0 +1,89 @@
+<?php
+
+$submitError = $key = "";
+
+function login() {
+	$key = $_POST["key"];
+//	if() {	Validate Riot API Key
+            	if(!isset($_SESSION)) {
+        		session_start();
+			$_SESSION['key'] = "$key";
+			print "<br><h1>Successful Login</h1><br><br>";
+		}
+		else {
+			print "You already have a session running!";
+		}
+/*        }
+        else {
+		print "Invalid Key";
+        }*/
+}
+
+function test_input($data) {
+        $data = trim($data);
+        $data = stripslashes($data);
+        $data = htmlspecialchars($data);
+        return $data;
+}
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        if (empty($_POST["key"]) || $_POST["key"] == "") {
+                $submitError = "* Key is required";
+        }
+        else {
+                $password = test_input($_POST["pass"]);
+                login();
+        }
+}
+
+if(!isset($_SESSION)) { 
+	session_start();
+}
+else {
+	session_unset();
+    	unset($_SESSION);
+	session_destroy();
+	$_SESSION = array();
+    	$_SESSION = [];
+}
+
+
+
+require("header.php");
+print"
+<head>
+	<title>Salty Lanes | Home</title>
+</head>
+<body style='background-color:grey;'>
+<table style='width:80%;border-collapse:collapse;background-color:rgb(211,211,211);border-radius:10px;-moz-border-radius:10px;-webkit-border-radius:10px;' align='center'>";
+if(!isset($_SESSION["key"])) {
+        print " 
+		<tr>
+        	        <td style='text-align:center;'>
+				<form method='post' action= "; echo htmlspecialchars($_SERVER["PHP_SELF"]); print">
+                        		<br><br>
+                        		<label>Developer Key:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+                        		<input style='background-color:#FFFFFF' type='password' name='key'/>
+                        		<span class='error'>$submitError</span>
+                        		<br><br>
+                        		<input type='submit' name='submit' value='Login!' id='submit'>
+               			</form>
+                	</td>
+        	</tr>";
+}
+else {
+print "
+	<tr>
+		<td>
+			<br>
+			<center><a style='text-decoration:none' href='logout.php' ><h2>Logout</h2></a></center>
+			<br>
+		</td>
+	</tr>		
+</table>
+</body>
+";
+}
+
+?>
+
