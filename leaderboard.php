@@ -36,7 +36,7 @@ require("header.php");
 	<title>Salty Lanes | Leaderboards</title>
 </head>
     <!-- The sortable class comes from sortable.js and is used to sort the table by its header -->
-    <table class='sortable' style='width:80%;border-collapse:collapse;background-color:rgb(211,211,211);border-radius:10px;-moz-border-radius:10px;-webkit-border-radius:10px;' align='center'>
+    <table class='sortable' align='center'>
         <?php
             $return_array = getMasters();
             if($return_array) {

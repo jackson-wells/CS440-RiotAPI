@@ -56,8 +56,8 @@ require 'header.php';
 <head>
     <title>Salty Lanes | <?php echo $name ?> </title>
 </head>
-<body style='background-color:grey;'>
-    <table style='width:80%;border-collapse:collapse;background-color:rgb(211,211,211);border-radius:10px;-moz-border-radius:10px;-webkit-border-radius:10px;' align='center'>
+<body>
+    <table align='center'>
     <?php
     $summoner = getSummoner();
     if($summoner) {

@@ -56,8 +56,8 @@ print"
 <head>
 	<title>Salty Lanes | Home</title>
 </head>
-<body style='background-color:grey;'>
-<table style='width:80%;border-collapse:collapse;background-color:rgb(211,211,211);border-radius:10px;-moz-border-radius:10px;-webkit-border-radius:10px;' align='center'>";
+<body>
+<table align='center'>";
 if(!isset($_SESSION["key"])) {
         print " 
 		<tr>
@@ -68,10 +68,10 @@ if(!isset($_SESSION["key"])) {
 	                </td>
 	        </tr>
 		<tr>
-        	        <td style='text-align:center;'>
+        	        <td>
 				<form method='post' action= "; echo htmlspecialchars($_SERVER["PHP_SELF"]); print">
                         		<label>Developer Key:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
-                        		<input style='background-color:#FFFFFF' type='password' name='key'/>
+                        		<input type='password' name='key'/>
                         		<span class='error'>$submitError</span>
                         		<br><br>
                         		<input type='submit' name='submit' value='Login!' id='submit'>
@@ -89,11 +89,11 @@ print "
                 </td>
         </tr>
 	<tr>
-		<td style='text-align:center;'>
+		<td>
 			<form method='post' action='stats.php'>
                         	<br><br>
                               	<label>Summoner:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
-                              	<input style='background-color:#FFFFFF' type='text' name='summoner'/>
+                              	<input type='text' name='summoner'/>
                            	<br><br>
                                	<input type='submit' name='submit' value='Get Statistics' id='submit'>
                    	</form>
@@ -109,7 +109,7 @@ print "
 	<tr>
 		<td>
 			<br>
-			<center><a style='text-decoration:none' href='logout.php' ><h2>Logout</h2></a></center>
+			<center><a href='logout.php' ><h2>Logout</h2></a></center>
 			<br>
 		</td>
 	</tr>		
