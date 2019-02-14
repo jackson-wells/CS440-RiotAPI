@@ -4,7 +4,16 @@ $submitError = $key = $loginResult = "";
 
 function login() {
 	$key = $_POST["key"];
-//	if() {	Validate Riot API Key
+	$url = "https://na1.api.riotgames.com/lol/summoner/v4/summoners/by-name/RiotSchmick?api_key=$key";
+	$ch = curl_init();
+	curl_setopt($ch, CURLOPT_URL, $url);
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+	curl_setopt($ch, CURLOPT_HEADER, true);
+	$data = curl_exec($ch);
+	$httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+	curl_close($ch);
+
+	if($httpcode == "200") {
             	if(!isset($_SESSION)) {
         		session_start();
 			$_SESSION['key'] = "$key";
@@ -13,10 +22,10 @@ function login() {
 		else {
 			return 0;
 		}
-/*        }
+        }
         else {
-		print "Invalid Key";
-        }*/
+		return 0;
+        }
 }
 
 function test_input($data) {
@@ -32,11 +41,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
         else {
                 $password = test_input($_POST["pass"]);
-                if(login()) {
+                if(login() == 1) {
 			$loginResult = "<h2>Successful Login!</h2><hr>";
 		}
 		else {
-			$loginResult = "You already have a session running!";
+			$loginResult = "Invalid Key!";
 		}
         }
 }
@@ -80,10 +89,14 @@ print "
                 </td>
         </tr>
 	<tr>
-		<td>
-			<br>
-				<center>STATS right here</center>
-			<br>
+		<td style='text-align:center;'>
+			<form method='post' action='stats.php'>
+                        	<br><br>
+                              	<label>Summoner:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+                              	<input style='background-color:#FFFFFF' type='text' name='summoner'/>
+                           	<br><br>
+                               	<input type='submit' name='submit' value='Get Statistics' id='submit'>
+                   	</form>
 		</td>
 	</tr>
 	<tr>
