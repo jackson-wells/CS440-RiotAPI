@@ -45,7 +45,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 			$loginResult = "<h2>Successful Login!</h2><hr>";
 		}
 		else {
-			$loginResult = "Invalid Key!";
+			$loginResult = "<h2>Invalid Key!</h2><hr>";
 		}
         }
 }
@@ -66,10 +66,15 @@ print"
 if(!isset($_SESSION["key"])) {
         print " 
 		<tr>
+	                <td>
+	                        <br>
+	                                <center>$loginResult</center>
+	                        <br>
+	                </td>
+	        </tr>
+		<tr>
         	        <td style='text-align:center;'>
-				<center>$loginResult</center>
 				<form method='post' action= "; echo htmlspecialchars($_SERVER["PHP_SELF"]); print">
-                        		<br><br>
                         		<label>Developer Key:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
                         		<input style='background-color:#FFFFFF' type='password' name='key'/>
                         		<span class='error'>$submitError</span>
