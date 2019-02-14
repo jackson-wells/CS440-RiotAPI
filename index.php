@@ -1,5 +1,5 @@
 <?php
-
+session_start();
 $submitError = $key = $loginResult = "";
 
 function login() {
@@ -14,18 +14,12 @@ function login() {
 	curl_close($ch);
 
 	if($httpcode == "200") {
-            	if(!isset($_SESSION)) {
-        		session_start();
-			$_SESSION['key'] = "$key";
-			return 1;
-		}
-		else {
-			return 0;
-		}
-        }
-        else {
-		return 0;
-        }
+        $_SESSION['key'] = "$key";
+        return 1;
+    }
+    else {
+        return 0;
+    }
 }
 
 function test_input($data) {
@@ -43,6 +37,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $password = test_input($_POST["pass"]);
                 if(login() == 1) {
 			$loginResult = "<h2>Successful Login!</h2><hr>";
+            
 		}
 		else {
 			$loginResult = "<h2>Invalid Key!</h2><hr>";
