@@ -9,6 +9,12 @@
     left: 33%;
 }
 
+.table_span h1 {
+    display: inline-block;
+    margin: 15px;
+    border-bottom: 1px solid black;
+}
+
 table {
     -webkit-box-shadow: 7px 7px 5px 0px rgba(50, 50, 50, 0.75);
     -moz-box-shadow:    7px 7px 5px 0px rgba(50, 50, 50, 0.75);
@@ -21,4 +27,6 @@ table {
 
 body {
     margin: 0px;
+    margin-bottom: 1em;
+    background-color: grey;
 }
