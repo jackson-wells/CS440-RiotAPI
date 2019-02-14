@@ -1,0 +1,24 @@
+.table_header {
+    border-collapse:collapse;
+    background-color:rgb(211,211,211);
+    padding: 10px;
+}
+
+.table_span {
+    position: relative;
+    left: 33%;
+}
+
+table {
+    -webkit-box-shadow: 7px 7px 5px 0px rgba(50, 50, 50, 0.75);
+    -moz-box-shadow:    7px 7px 5px 0px rgba(50, 50, 50, 0.75);
+    box-shadow:         7px 7px 5px 0px rgba(50, 50, 50, 0.75);
+}
+
+.clearfix {
+    overflow: auto;
+}
+
+body {
+    margin: 0px;
+}
