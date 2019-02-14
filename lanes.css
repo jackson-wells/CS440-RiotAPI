@@ -16,6 +16,12 @@
 }
 
 table {
+    width: 80%;
+    border-collapse:collapse;
+    background-color:rgb(211,211,211);
+    border-radius:10px;
+    -moz-border-radius:10px;
+    -webkit-border-radius:10px;
     -webkit-box-shadow: 7px 7px 5px 0px rgba(50, 50, 50, 0.75);
     -moz-box-shadow:    7px 7px 5px 0px rgba(50, 50, 50, 0.75);
     box-shadow:         7px 7px 5px 0px rgba(50, 50, 50, 0.75);
@@ -23,6 +29,23 @@ table {
 
 .clearfix {
     overflow: auto;
+}
+
+td {
+    text-align:center;
+}
+
+a {
+    text-decoration:none;
+    color:inherit;
+}
+
+img {
+    vertical-align: middle;
+}
+
+input {
+    background-color:#FFFFFF;
 }
 
 body {
