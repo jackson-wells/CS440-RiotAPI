@@ -57,6 +57,7 @@ require 'header.php';
     <title>Salty Lanes | <?php echo $name ?> </title>
 </head>
 <body>
+    <div class='stats_container'>
     <table align='center'>
     <?php
     $summoner = getSummoner();
@@ -76,4 +77,15 @@ require 'header.php';
     }
 ?>
     </table>
+    </div>
+<?php
+if(isset($_SESSION["key"])) {
+    print "
+        <div class='logout_container'>
+            <a href='logout.php'>Logout</a>
+            <br>
+            This website was developed for CS440 Winter Term 2019 at Oregon State University. 
+        </div>
+        ";
+}?>
 </body>

@@ -57,37 +57,41 @@ print"
 	<title>Salty Lanes | Home</title>
 </head>
 <body>
-    <div class='home_container'>";
+";
 if(!isset($_SESSION["key"])) {
-        print " 
-        <center><div>Please login to use this site.</div></center>
-    ";
-}
-else {
-print "
-        <div class='summoner_search_container'>
-			<form class='summoner_search' method='post' action='stats.php'>
-                <label class='dev_key'>Summoner:
-                    <input type='text' name='summoner'/>
+    print " 
+    <div class='login_container'>
+        <center>$loginResult</center>
+        <div class='login_form'>
+            <form method='post' action= "; echo htmlspecialchars($_SERVER["PHP_SELF"]); print">
+                <h1> Login </h1>
+                <label class='dev_key'>Developer Key:
+                    <input class='dev_key' type='password' name='key'/>
                 </label>
-                <button type='submit' name='submit' value='Get Statistics' id='submit'>Get Statistics</button>
+                <span class='error'>$submitError</span>
+                <button type='submit' name='submit' id='submit'>Login</button>
             </form>
         </div>
+    </div>
+</body>";
+}
+else {
+    print "
+    <div class='login_container'>
+        <h1> Successfully logged in! </h1>
+        <center><div> Redirecting in <strong id='redirect_num'>3</strong> seconds.<div></center>
+        <script type='text/javascript'>
+            function changeNum(num) {
+                document.getElementById('redirect_num').innerHTML = num; 
+            }
+            function redirect() {
+                window.location='./index.php';
+            }
+            setTimeout('redirect()', 3000);
+            setTimeout('changeNum(2)', 1000);
+            setTimeout('changeNum(1)', 2000);
+        </script>
+    </div>
 ";
 }
-print "
-    </div>
-    ";
-if(isset($_SESSION["key"])) {
-    print "
-        <div class='logout_container'>
-            <a href='logout.php'>Logout</a>
-            <br>
-            This website was developed for CS440 Winter Term 2019 at Oregon State University. 
-        </div>
-        ";
-}
-print "
-</body>
-    ";
 ?>

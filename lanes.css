@@ -1,20 +1,3 @@
-.table_header {
-    border-collapse:collapse;
-    background-color:rgb(211,211,211);
-    padding: 10px;
-}
-
-.table_span {
-    position: relative;
-    left: 33%;
-}
-
-.table_span h1 {
-    display: inline-block;
-    margin: 15px;
-    border-bottom: 1px solid black;
-}
-
 table {
     width: 80%;
     border-collapse:collapse;
@@ -51,5 +34,168 @@ input {
 body {
     margin: 0px;
     margin-bottom: 1em;
-    background-color: grey;
+    background-color: whitesmoke;
 }
+
+/*****Header File *****/
+
+.challenger_emblem {
+    width: 50;
+    height: 50;
+    margin-right: 10px;
+    vertical-align: top;
+}
+
+.table_header {
+    border-collapse:collapse;
+    background-color:rgb(211,211,211);
+    padding: 10px;
+    border-bottom: 1px solid rgb(205,205,205);
+}
+
+.table_span {
+    position: relative;
+    left: 10%;
+}
+
+.table_span h1 {
+    display: inline-block;
+    padding: 0px 15px 0px 15px;
+    border-left: 1px solid black;
+    height: 50;
+    margin: 0px;
+    font-weight: normal;
+}
+
+/******** Login Page ******/
+
+.login_container {
+    width: 80%;
+    background-color:rgb(230,230,230);
+    position: relative;
+    left: 10%;
+    min-height: 900px;
+}
+
+.login_container h1{
+    margin: 0px;
+    text-align: center;
+}
+
+.login_form {
+    font-family: sans-serif;
+    text-align: center;
+    padding: 50px 15px 0px 15px;
+}
+
+.login_form form {
+    min-width: 200px;
+    display: inline-block;
+    padding: 15px;
+    background-color: rgb(211,211,211);
+    border-radius: 3px;
+}
+
+.login_form form h1 {
+    margin: 0px 0px 15px 0px;
+    text-align: left;
+    font-weight: normal;
+    border-bottom: 1px solid rgb(185,185,185); 
+    font-size: large;
+}
+
+.dev_key {
+    color: rgb(100, 100, 100); 
+    display: block;
+    text-align: left;
+    margin-bottom: 15px;
+}
+
+.dev_key input {
+    border: 1px solid rgb(185,185,185);
+    border-radius: 5px;
+    padding: 5px;
+    width: 100%;
+}
+
+.login_form button{
+    width: 100%;
+    border: 1px solid rgb(185,185,185);
+    border-radius: 5px;
+    padding: 4px;
+    box-shadow: inset 0 1px rgba(255,255,255,0.4), 
+        0 2px 1px rgba(0,0,0,0.1);
+}
+
+.login_form button:hover {
+box-shadow: 
+        inset 0 1px rgba(255,255,255,0.2), 
+        inset 0 20px 30px rgba(200,200,200,0.5);
+}
+
+/*********Index Page*****/
+
+.home_container {
+    width: 80%;
+    background-color:rgb(230,230,230);
+    position: relative;
+    left: 10%;
+    min-height: 900px;
+}
+
+.summoner_search_container {
+    font-family: sans-serif;
+    text-align: center;
+    padding: 50px 15px 0px 15px;
+}
+
+.summoner_search {
+    min-width: 200px;
+    display: inline-block;
+    padding: 15px;
+    background-color: rgb(211,211,211);
+    border-radius: 3px;
+}
+
+.summoner_search button{
+    width: 100%;
+    border: 1px solid rgb(185,185,185);
+    border-radius: 5px;
+    padding: 4px;
+    box-shadow: inset 0 1px rgba(255,255,255,0.4), 
+        0 2px 1px rgba(0,0,0,0.1);
+}
+
+.login_form button:hover {
+box-shadow: 
+        inset 0 1px rgba(255,255,255,0.2), 
+        inset 0 20px 30px rgba(200,200,200,0.5);
+}
+
+/*******Stats Page********/
+.stats_container {
+    width: 80%;
+    background-color:rgb(230,230,230);
+    position: relative;
+    left: 10%;
+    min-height: 900px;
+}
+
+
+
+
+
+
+/***** Logout/footer*****/
+
+.logout_container {
+    width: 80%;
+    position: relative;
+    left: 10%;
+    padding: 10px;
+}
+
+.logout_container a {
+    border-bottom: 1px solid black;
+}
+

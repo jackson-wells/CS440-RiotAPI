@@ -36,6 +36,7 @@ require("header.php");
 	<title>Salty Lanes | Leaderboards</title>
 </head>
     <!-- The sortable class comes from sortable.js and is used to sort the table by its header -->
+    <div class='stats_container'>
     <table class='sortable' align='center'>
         <?php
             $return_array = getMasters();
@@ -78,4 +79,15 @@ require("header.php");
             }
         ?>
     </table>
+    </div>
+<?php
+if(isset($_SESSION["key"])) {
+    print "
+        <div class='logout_container'>
+            <a href='logout.php'>Logout</a>
+            <br>
+            This website was developed for CS440 Winter Term 2019 at Oregon State University. 
+        </div>
+        ";
+}?>
 </body>
