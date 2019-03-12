@@ -1,6 +1,8 @@
 <?php
 //start the session as we need it to be running anyways
 session_start();
+$name = $_POST["summoner"];
+
 //if there is no key, redirect back to home
 if(!isset($_SESSION["key"])) {
     header('Location: index.php');
@@ -9,7 +11,7 @@ if(!isset($_SESSION["key"])) {
 //getSummoner requests the api for information on the provided summoner name (comes from index.php)
 function getSummoner() {
 	$key = $_SESSION["key"];
-	$name = $_POST["summoner"];
+    $name = $_POST["summoner"];
 	$url = "https://na1.api.riotgames.com/lol/summoner/v4/summoners/by-name/$name?api_key=$key";
 	$crl = curl_init();
 	curl_setopt($crl, CURLOPT_URL, $url);
@@ -58,25 +60,26 @@ require 'header.php';
 </head>
 <body>
     <div class='stats_container'>
-    <table align='center'>
-    <?php
-    $summoner = getSummoner();
-    if($summoner) {
-        echo '<tr>';
-        foreach($summoner as $summoner_key => $summoner_value) {
-            switch($summoner_key) {
-                case 'name':
-                    echo '<td>'.$summoner_value.'</td>';
-                    break;
-                case 'summonerLevel':
-                    echo '<td>'.$summoner_value.'</td>';
-                    break;
+        <div class='summoner_overview'>
+        <?php
+        $summoner = getSummoner();
+        if($summoner) {
+            echo '<div class="summoner_title">';
+            foreach($summoner as $summoner_key => $summoner_value) {
+                switch($summoner_key) {
+                    case 'name':
+                        echo '<div class="summoner_icon"> temp box </div>';
+                        echo '<div class="summoner_name">'.$summoner_value.'</div>';
+                        break;
+                    case 'summonerLevel':
+                        echo '<div class="summoner_level"> Level: '.$summoner_value.'</div>';
+                        break;
+                }
             }
+            echo '</div>';
         }
-        echo '</tr>';
-    }
-?>
-    </table>
+        ?>
+        </div>
     </div>
 <?php
 if(isset($_SESSION["key"])) {
