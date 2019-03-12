@@ -1,4 +1,6 @@
 <?php
+include_once 'PHPScripts/database.php';
+
 //start the session as we need it to be running anyways
 session_start();
 $name = $_POST["summoner"];
@@ -27,6 +29,26 @@ function getSummoner() {
 		else {
 			return 0;
 		}
+}
+
+function getSummonerIconURL() {
+        $iconID = "";
+        
+        $pdo = new PDO(getDBDsn(), getDBUser(), getDBPassword());
+        
+        $query = "SELECT profileIcon FROM Players WHERE summonerName = :summonerName";
+        $statement = $pdo->prepare($query);
+        $statement->bindValue(":summonerName", $_POST["summoner"]);
+        $statement->execute();
+        $results = $statement->fetchAll();
+        if(count($results) == 0)
+        	echo "No Results!";
+        else if(count($results) > 1)
+        	echo "Too Many Results!";
+        else
+        	$iconID = $results[0]["profileIcon"];
+
+        return "http://ddragon.leagueoflegends.com/cdn/6.24.1/img/profileicon/$iconID.png";
 }
 
 //Get Rank retrieves the summoners ranked information 
@@ -63,6 +85,7 @@ require 'header.php';
         <div class='summoner_overview'>
         <?php
         $summoner = getSummoner();
+	$iconURL = getSummonerIconURL();
         if($summoner) {
             echo '<div class="summoner_title">';
             foreach($summoner as $summoner_key => $summoner_value) {
