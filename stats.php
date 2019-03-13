@@ -135,7 +135,7 @@ require 'header.php';
             $counter = 1;
             foreach($matchInfo as $matches){
                 foreach($matches as $basicInfo){
-                    echo '<div class="match_list">';
+                    echo '<div class="match_list">Game:'.$counter.'';
                     foreach($basicInfo as $info => $match_values){
                         switch($info) {
                             case 'champion':
@@ -149,8 +149,12 @@ require 'header.php';
                                 break;
                         }
                     }
-
-                    echo '</div>';
+                    $counter++;
+                    echo '</div><br>';
+                    if($counter > 20){
+                        break;
+                    }
+                    else{continue;}
                 } 
             }
             echo '</div>';

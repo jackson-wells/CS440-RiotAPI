@@ -214,10 +214,9 @@ box-shadow:
 
 .match_list{
     font-family: sans-serif;
-    display: inline;
-    right: 0;
     font-size: 1em;
-    /*border: 6px solid blue;*/
+    border-left: 6px solid lightblue;
+    background-color: darkgrey;
 }
 
 /******Leaderboards******/
