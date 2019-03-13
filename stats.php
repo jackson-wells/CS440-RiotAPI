@@ -48,9 +48,26 @@ function getSummonerIconURL() {
         else
         	$iconID = $results[0]["profileIcon"];
 
-        return "http://ddragon.leagueoflegends.com/cdn/6.24.1/img/profileicon/$iconID.png";
+        return "http://ddragon.leagueoflegends.com/cdn/9.5.1/img/profileicon/$iconID.png";
 }
+function getMatchList($acct_id){
+    $key = $_SESSION["key"];
+	$url = "https://na1.api.riotgames.com/lol/match/v4/matchlists/by-account/$acct_id?api_key=$key";
+	$crl = curl_init();
+	curl_setopt($crl, CURLOPT_URL, $url);
+	curl_setopt($crl, CURLOPT_RETURNTRANSFER, true);
+    $data = curl_exec($crl);
+    $MatchList = json_decode($data, true);
+	$httpcode = curl_getinfo($crl, CURLINFO_HTTP_CODE);
+	curl_close($crl);
 
+	if($httpcode == "200") {
+			return $MatchList;
+		}
+		else {
+			return 0;
+		}
+}
 //Get Rank retrieves the summoners ranked information 
 // I believe you have to encode the summoner name in html url encoding for this to work, but im not sure
 //function getRank() {
@@ -86,6 +103,7 @@ require 'header.php';
         <?php
         $summoner = getSummoner();
         $iconURL = getSummonerIconURL();
+
         if($summoner) {
             echo '<div class="summoner_title">';
             foreach($summoner as $summoner_key => $summoner_value) {
@@ -100,13 +118,44 @@ require 'header.php';
                     case 'summonerLevel':
                         $s_lvl = $summoner_value;
                         break;
+                    case 'accountId':
+                        $s_id = $summoner_value;
+                        break;
+                
                 }
             }
                 echo "<img src='$s_icon' class='summoner_icon'/>";
                 echo '<div class="summoner_name">'.$s_name.'</div>';
                 echo '<div class="summoner_level"> Level: '.$s_lvl.'</div>';
             echo '</div>';
+
+            $matchInfo = getMatchList($s_id);
+            
+            echo '<div class="summoner_matches">';
+            $counter = 1;
+            foreach($matchInfo as $matches){
+                foreach($matches as $basicInfo){
+                    echo '<div class="match_list">';
+                    foreach($basicInfo as $info => $match_values){
+                        switch($info) {
+                            case 'champion':
+                                $champ_id = $match_values;
+                                //$champ_icon = "http://ddragon.leagueoflegends.com/cdn/9.5.1/img/profileicon/$s_icon.png";
+                                echo '<div class="champion_id">Champion id: '.$champ_id.'</div>';
+                                break;
+                            case 'lane':
+                                $player_role = $match_values;
+                                echo '<div class="summoner_lane">Lane: '.$player_role.'</div>';
+                                break;
+                        }
+                    }
+
+                    echo '</div>';
+                } 
+            }
+            echo '</div>';
         }
+
         ?>
         </div>
     </div>
