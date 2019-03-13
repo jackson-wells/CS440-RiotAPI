@@ -43,7 +43,7 @@ require("header.php");
                     $return_array = getChallengers();
                     if($return_array) {
                         echo '<thead>
-                                    <th> Summoner </th>
+                                    <th class="sorttable_nosort"> Summoner </th>
                                     <th> League Points </th>
                                     <th> Wins </th>
                                     <th> Losses </th>
@@ -73,11 +73,14 @@ require("header.php");
                                         }
                                     }
                                     echo '<tr class="single_challenger">';
-                                        echo '<td>'.$s_name.'</td>';
-                                        echo '<td>'.$s_lp.'</td>';
-                                        echo '<td>'.$s_wins.'</td>';
-                                        echo '<td>'.$s_losses.'</td>';
-                                        echo '<td>'.bcdiv((($s_wins / ($s_wins + $s_losses))*100.00), 1, 2).'%</td>';
+                                        echo  "<td><div><strong hidden>".$s_name." </strong><form class='leaderboard_name_form' method='post' action='stats.php'>
+                                                    <input hidden type='text' name='summoner' value='".$s_name."'/>
+                                                    <button type='submit' name='submit' id='submit'>".$s_name."</button>
+                                                </form></div></td>";
+                                        echo '<td><div>'.$s_lp.'</div></td>';
+                                        echo '<td><div>'.$s_wins.'</div></td>';
+                                        echo '<td><div>'.$s_losses.'</div></td>';
+                                        echo '<td><div>'.bcdiv((($s_wins / ($s_wins + $s_losses))*100.00), 1, 2).'%</div></td>';
                                     echo '</tr>';
                                 }
                             }
