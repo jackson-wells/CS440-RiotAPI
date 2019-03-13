@@ -60,6 +60,10 @@ html {
     font-weight: normal;
 }
 
+.table_span a:hover {
+    box-shadow: 0px 5px 5px -5px rgba(0,0,0,0.75);
+}
+
 /******** Login Page ******/
 
 .login_container {
@@ -223,11 +227,39 @@ box-shadow:
     width: 100%;
     border-collapse: collapse;
 }
+.leaderboard_name_form {
+    margin:0px;
+}
+
+.leaderboard_name_form button {
+    border: none;
+    background-color: inherit;
+    font-size: inherit;
+    font-family: inherit;
+}
+.leaderboard_name_form button:hover {
+    box-shadow: 0px 2px 2px -2px rgba(0,0,0,0.75);
+}
 
 .single_challenger {
-    height: 3em; 
+    box-shadow: 0px 5px 5px -5px rgba(0,0,0,0.75);
+}
+.single_challenger td {
+    padding: 0;
+}
+.single_challenger td div {
+    padding: 1.25em 0; 
     margin-top: .5em;
-    border: 1px solid black;
+    border-style: solid;
+    border-color: black;
+    border-width: 1px 0;
+}
+.single_challenger td:first-child div {
+    border-left-width: 1px;
+}
+
+.single_challenger td:last-child div {
+    border-right-width: 1px;
 }
 
 .single_challenger_icon {

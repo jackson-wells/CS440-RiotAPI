@@ -13,7 +13,7 @@ if(!isset($_SESSION["key"])) {
 //getSummoner requests the api for information on the provided summoner name (comes from index.php)
 function getSummoner() {
 	$key = $_SESSION["key"];
-    $name = $_POST["summoner"];
+    $name = rawurlencode($_POST["summoner"]);
 	$url = "https://na1.api.riotgames.com/lol/summoner/v4/summoners/by-name/$name?api_key=$key";
 	$crl = curl_init();
 	curl_setopt($crl, CURLOPT_URL, $url);
