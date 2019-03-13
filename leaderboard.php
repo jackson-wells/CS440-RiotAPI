@@ -1,4 +1,6 @@
 <?php
+include_once 'PHPScripts/database.php';
+
 //start the session as we need it to be running anyways
 session_start();
 //if there is no key, redirect back to home
@@ -8,23 +10,24 @@ if(!isset($_SESSION["key"])) {
 
 //getMasters requests the api for all the summoners in the Challengers League (key comes from index.php)
 function getChallengers() {
-	$key = $_SESSION["key"];
-	$url = "https://na1.api.riotgames.com/lol/league/v4/challengerleagues/by-queue/RANKED_SOLO_5x5?api_key=$key";
-	$crl = curl_init();
-	curl_setopt($crl, CURLOPT_URL, $url);
-	curl_setopt($crl, CURLOPT_RETURNTRANSFER, true);
-    $data = curl_exec($crl);
-    $leaders = json_decode($data, true);
-	$httpcode = curl_getinfo($crl, CURLINFO_HTTP_CODE);
-	curl_close($crl);
+	$pdo = new PDO(getDBDsn(), getDBUser(), getDBPassword());
 
-	if($httpcode == "200") {
-			return $leaders;
-		}
-		else {
-            echo '<div> Error code: '.$httpcode .'</div>';
-			return 0;
-		}
+	$query = "SELECT summonerName AS name, leaguePoints, wins, losses, profileIconId
+	         FROM LeagueItem
+	         LEFT JOIN Summoners
+	         	ON LeagueItem.summonerName = Summoners.name
+	         WHERE leagueId = '6b64089f-e9b8-308d-926b-1bca75db4d98'
+	         ORDER BY leaderBoardRank";
+	$statement = $pdo->prepare($query);
+	$statement->execute();
+	$results = $statement->fetchAll();
+
+	return $results;
+}
+
+function calcWinRate($wins, $losses)
+{
+	return round($wins / ($wins + $losses) * 100.00, 1);
 }
 
 
@@ -40,8 +43,8 @@ require("header.php");
         <div class='leaderboard_container'>
             <table class='sortable leaderboard'>
                 <?php
-                    $return_array = getChallengers();
-                    if($return_array) {
+                    $challengers = getChallengers();
+                    if($challengers) {
                         echo '<thead>
                                     <th class="sorttable_nosort"> Summoner </th>
                                     <th> League Points </th>
@@ -50,40 +53,19 @@ require("header.php");
                                     <th> Win Rate </th>
                                 </thead>
                                 <tbody>';
-                        //For each element in the array assign key and value, access only the sub array with key entries
-                        foreach($return_array as $array_key => $array_value) {
-                            if($array_key == 'entries') {
-                                //loop through each sub array (1 array = 1 summoner) 
-                                foreach($array_value as $summoner_array){
-                                    //loop through the summoner array and get the name, lp, wins,  and losses
-                                    foreach($summoner_array as $summoner_key => $summoner_value){
-                                        switch($summoner_key) {
-                                            case 'summonerName':
-                                                $s_name = $summoner_value;
-                                                break;
-                                            case 'leaguePoints':
-                                                $s_lp = $summoner_value;
-                                                break;
-                                            case 'wins':
-                                                $s_wins = $summoner_value;
-                                                break;
-                                            case 'losses':
-                                                $s_losses = $summoner_value;
-                                                break;
-                                        }
-                                    }
-                                    echo '<tr class="single_challenger">';
-                                        echo  "<td><div><strong hidden>".$s_name." </strong><form class='leaderboard_name_form' method='post' action='stats.php'>
-                                                    <input hidden type='text' name='summoner' value='".$s_name."'/>
-                                                    <button type='submit' name='submit' id='submit'>".$s_name."</button>
-                                                </form></div></td>";
-                                        echo '<td><div>'.$s_lp.'</div></td>';
-                                        echo '<td><div>'.$s_wins.'</div></td>';
-                                        echo '<td><div>'.$s_losses.'</div></td>';
-                                        echo '<td><div>'.bcdiv((($s_wins / ($s_wins + $s_losses))*100.00), 1, 2).'%</div></td>';
-                                    echo '</tr>';
-                                }
-                            }
+
+                        foreach($challengers as $summoner)
+                        {
+                        	echo '<tr class="single_challenger">';
+                                echo "<td><div><strong hidden>${summoner["name"]} </strong><form class='leaderboard_name_form' method='post' action='stats.php'>
+                                            <input hidden type='text' name='summoner' value='${summoner["name"]}'/>
+                                            <button type='submit' name='submit' id='submit'>${summoner["name"]}</button>
+                                        </form></div></td>";
+                                echo "<td><div>${summoner["leaguePoints"]}</div></td>";
+                                echo "<td><div>${summoner["wins"]}</div></td>";
+                                echo "<td><div>${summoner["losses"]}</div></td>";
+                                echo "<td><div>".calcWinRate($summoner["wins"], $summoner["losses"])."%</div></td>";
+                            echo '</tr>';
                         }
                         echo '</tbody>';
                     }
