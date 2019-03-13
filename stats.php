@@ -42,9 +42,9 @@ function getSummonerIconURL() {
         $statement->execute();
         $results = $statement->fetchAll();
         if(count($results) == 0)
-        	echo "No Results!";
+            $iconID = "";
         else if(count($results) > 1)
-        	echo "Too Many Results!";
+            $iconID = "";
         else
         	$iconID = $results[0]["profileIcon"];
 
@@ -85,20 +85,26 @@ require 'header.php';
         <div class='summoner_overview'>
         <?php
         $summoner = getSummoner();
-	$iconURL = getSummonerIconURL();
+        $iconURL = getSummonerIconURL();
         if($summoner) {
             echo '<div class="summoner_title">';
             foreach($summoner as $summoner_key => $summoner_value) {
                 switch($summoner_key) {
+                    case 'profileIconId':
+                        $s_icon = $summoner_value;
+                        $s_icon = "http://ddragon.leagueoflegends.com/cdn/9.5.1/img/profileicon/$s_icon.png";
+                        break;
                     case 'name':
-                        echo '<div class="summoner_icon"> temp box </div>';
-                        echo '<div class="summoner_name">'.$summoner_value.'</div>';
+                        $s_name = $summoner_value;
                         break;
                     case 'summonerLevel':
-                        echo '<div class="summoner_level"> Level: '.$summoner_value.'</div>';
+                        $s_lvl = $summoner_value;
                         break;
                 }
             }
+                echo "<img src='$s_icon' class='summoner_icon'/>";
+                echo '<div class="summoner_name">'.$s_name.'</div>';
+                echo '<div class="summoner_level"> Level: '.$s_lvl.'</div>';
             echo '</div>';
         }
         ?>
