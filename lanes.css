@@ -208,6 +208,14 @@ box-shadow:
     height: 1.5em;
 }
 
+.match_list{
+    font-family: sans-serif;
+    display: inline;
+    right: 0;
+    font-size: 1em;
+    /*border: 6px solid blue;*/
+}
+
 /******Leaderboards******/
 
 .leaderboard_container {
