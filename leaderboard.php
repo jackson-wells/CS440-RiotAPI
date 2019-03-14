@@ -20,9 +20,36 @@ function getChallengers() {
 	         ORDER BY leaderBoardRank";
 	$statement = $pdo->prepare($query);
 	$statement->execute();
-	$results = $statement->fetchAll();
+	$challengers = $statement->fetchAll();
 
-	return $results;
+	for($i = 0; $i < count($challengers); $i++)
+	{
+		if($challengers[$i]["profileIconId"] == null)
+		{
+			$key = $_SESSION["key"];
+			$summonerName = rawurlencode($challengers[$i]["name"]);
+			$crl = curl_init("https://na1.api.riotgames.com/lol/summoner/v4/summoners/by-name/$summonerName?api_key=$key");
+			curl_setopt($crl, CURLOPT_RETURNTRANSFER, true);
+			$data = curl_exec($crl);
+			$summonerFromApi = json_decode($data, true);
+			$httpcode = curl_getinfo($crl, CURLINFO_HTTP_CODE);
+			curl_close($crl);
+
+			if($httpcode == "200")
+			{
+				$challengers[$i]["profileIconId"] = $summonerFromApi["profileIconId"];
+
+				$ch = curl_init("https://web.engr.oregonstate.edu/~hammockt/cs440/final_project/summoner.php");
+				curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($summonerFromApi));
+				curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
+				curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+				$result = curl_exec($ch);
+				curl_close($ch);
+			}
+		}
+	}
+
+	return $challengers;
 }
 
 function calcWinRate($wins, $losses)
@@ -46,6 +73,7 @@ require("header.php");
                     $challengers = getChallengers();
                     if($challengers) {
                         echo '<thead>
+                        			<th> Icon </th>
                                     <th class="sorttable_nosort"> Summoner </th>
                                     <th> League Points </th>
                                     <th> Wins </th>
@@ -57,6 +85,7 @@ require("header.php");
                         foreach($challengers as $summoner)
                         {
                         	echo '<tr class="single_challenger">';
+                        		echo "<td><img src='http://ddragon.leagueoflegends.com/cdn/9.5.1/img/profileicon/${summoner["profileIconId"]}.png' class='summoner_icon'/></td>";
                                 echo "<td><div><strong hidden>${summoner["name"]} </strong><form class='leaderboard_name_form' method='post' action='stats.php'>
                                             <input hidden type='text' name='summoner' value='${summoner["name"]}'/>
                                             <button type='submit' name='submit' id='submit'>${summoner["name"]}</button>
