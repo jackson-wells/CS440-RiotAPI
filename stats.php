@@ -13,61 +13,62 @@ if(!isset($_SESSION["key"])) {
 //getSummoner requests the api for information on the provided summoner name (comes from index.php)
 function getSummoner() {
 	$key = $_SESSION["key"];
-    $name = rawurlencode($_POST["summoner"]);
+    	$name = rawurlencode($_POST["summoner"]);
 	$url = "https://na1.api.riotgames.com/lol/summoner/v4/summoners/by-name/$name?api_key=$key";
 	$crl = curl_init();
 	curl_setopt($crl, CURLOPT_URL, $url);
 	curl_setopt($crl, CURLOPT_RETURNTRANSFER, true);
-    $data = curl_exec($crl);
-    $summoner = json_decode($data, true);
+    	$data = curl_exec($crl);
+    	$summoner = json_decode($data, true);
 	$httpcode = curl_getinfo($crl, CURLINFO_HTTP_CODE);
 	curl_close($crl);
 
 	if($httpcode == "200") {
-			return $summoner;
-		}
-		else {
-			return 0;
-		}
+		return $summoner;
+	}
+	else {
+		return 0;
+	}
 }
 
 function getMatchList($acct_id){
-    $key = $_SESSION["key"];
+    	$key = $_SESSION["key"];
 	$url = "https://na1.api.riotgames.com/lol/match/v4/matchlists/by-account/$acct_id?api_key=$key";
 	$crl = curl_init();
 	curl_setopt($crl, CURLOPT_URL, $url);
 	curl_setopt($crl, CURLOPT_RETURNTRANSFER, true);
-    $data = curl_exec($crl);
-    $MatchList = json_decode($data, true);
+    	$data = curl_exec($crl);
+    	$MatchList = json_decode($data, true);
 	$httpcode = curl_getinfo($crl, CURLINFO_HTTP_CODE);
 	curl_close($crl);
 
 	if($httpcode == "200") {
-			return $MatchList;
-		}
-		else {
-			return 0;
-		}
+		return $MatchList;
+	}
+	else {
+		return 0;
+	}
 }
 //Get Rank retrieves the summoners ranked information 
 // I believe you have to encode the summoner name in html url encoding for this to work, but im not sure
 function getRank($summonerID) {
-    $key = $_SESSION["key"];
-    $name = $_POST["summoner"];
-    $url = "";
-    $crl = curl_init();
-    curl_setopt($crl, CURLOPT_URL, $url);
-    curl_setopt($crl, CURLOPT_RETURNTRANSFER, true);
-    $data = curl_exec($crl);
-    $summoner = json_decode($data, true);
-    $httpcode = curl_getinfo($crl, CURLINFO_HTTP_CODE);
-    curl_close($crl);
+    	$key = $_SESSION["key"];
+    	$name = $_POST["summoner"];
+    	$url = "https://na1.api.riotgames.com/lol/league/v4/positions/by-summoner/$summonerID?api_key=$key";
+    	$crl = curl_init();
+    	curl_setopt($crl, CURLOPT_URL, $url);
+    	curl_setopt($crl, CURLOPT_RETURNTRANSFER, true);
+    	$data = curl_exec($crl);
+    	$rank = json_decode($data, true);
+    	$httpcode = curl_getinfo($crl, CURLINFO_HTTP_CODE);
+    	curl_close($crl);
 
-    if($httpcode == "200") {
-            return $summoner;
+    	if($httpcode == "200") {
+		$rank = $rank[0];
+            	return $rank;
         }
         else {
-            return 0;
+            	return 0;
         }
 }
 
@@ -83,12 +84,16 @@ require 'header.php';
         <div class='summoner_overview'>
         <?php
         $summoner = getSummoner();
-	$stats = getRank($summoner["id"]);
+	$rank = getRank($summoner["id"]);
         if($summoner) {
             echo '<div class="summoner_title">';
                 echo "<img src='http://ddragon.leagueoflegends.com/cdn/9.5.1/img/profileicon/${summoner["profileIconId"]}.png' class='summoner_icon'/>";
                 echo "<div class='summoner_name'>${summoner["name"]}</div>";
                 echo "<div class='summoner_level'> Level: ${summoner["summonerLevel"]}</div>";
+		echo "<div> Tier: ${rank["tier"]} ${rank["rank"]}  </div>";
+		echo "<div> League Points: ${rank["leaguePoints"]} </div>";
+		echo "<div> Wins: ${rank["wins"]} </div>";
+		echo "<div> Losses: ${rank["losses"]} </div>";
             echo '</div>';
 
             $matchInfo = getMatchList($summoner["accountId"]);
