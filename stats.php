@@ -12,16 +12,6 @@ if(!isset($_SESSION["key"])) {
 
 //getSummoner requests the api for information on the provided summoner name (comes from index.php)
 function getSummoner() {
-	$pdo = new PDO(getDBDsn(), getDBUser(), getDBPassword());
-        
-    $query = "SELECT name, profileIcon, summonerLevel, accountId FROM Summoners WHERE name = :summonerName";
-    $statement = $pdo->prepare($query);
-    $statement->bindValue(":summonerName", $_POST["summoner"]);
-    $statement->execute();
-    $results = $statement->fetchAll();
-    if(count($results) > 0)
-    	return $results[0];
-
 	$key = $_SESSION["key"];
     $name = rawurlencode($_POST["summoner"]);
 	$url = "https://na1.api.riotgames.com/lol/summoner/v4/summoners/by-name/$name?api_key=$key";
@@ -34,38 +24,13 @@ function getSummoner() {
 	curl_close($crl);
 
 	if($httpcode == "200") {
-		$ch = curl_init("https://web.engr.oregonstate.edu/~hammockt/cs440/final_project/summoner.php");
-		curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
-		curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-		$result = curl_exec($ch);
-		curl_close($ch);
-	
-		return $summoner;
-	}
-
-	return 0;
+			return $summoner;
+		}
+		else {
+			return 0;
+		}
 }
 
-function getSummonerIconURL() {
-        $iconID = "";
-        
-        $pdo = new PDO(getDBDsn(), getDBUser(), getDBPassword());
-        
-        $query = "SELECT profileIcon FROM Players WHERE summonerName = :summonerName";
-        $statement = $pdo->prepare($query);
-        $statement->bindValue(":summonerName", $_POST["summoner"]);
-        $statement->execute();
-        $results = $statement->fetchAll();
-        if(count($results) == 0)
-            $iconID = "";
-        else if(count($results) > 1)
-            $iconID = "";
-        else
-        	$iconID = $results[0]["profileIcon"];
-
-        return "http://ddragon.leagueoflegends.com/cdn/9.5.1/img/profileicon/$iconID.png";
-}
 function getMatchList($acct_id){
     $key = $_SESSION["key"];
 	$url = "https://na1.api.riotgames.com/lol/match/v4/matchlists/by-account/$acct_id?api_key=$key";
@@ -86,25 +51,25 @@ function getMatchList($acct_id){
 }
 //Get Rank retrieves the summoners ranked information 
 // I believe you have to encode the summoner name in html url encoding for this to work, but im not sure
-//function getRank() {
-    //$key = $_SESSION["key"];
-    //$name = $_POST["summoner"];
-    //$url = "";
-    //$crl = curl_init();
-    //curl_setopt($crl, CURLOPT_URL, $url);
-    //curl_setopt($crl, CURLOPT_RETURNTRANSFER, true);
-    //$data = curl_exec($crl);
-    //$summoner = json_decode($data, true);
-    //$httpcode = curl_getinfo($crl, CURLINFO_HTTP_CODE);
-    //curl_close($crl);
+function getRank($summonerID) {
+    $key = $_SESSION["key"];
+    $name = $_POST["summoner"];
+    $url = "";
+    $crl = curl_init();
+    curl_setopt($crl, CURLOPT_URL, $url);
+    curl_setopt($crl, CURLOPT_RETURNTRANSFER, true);
+    $data = curl_exec($crl);
+    $summoner = json_decode($data, true);
+    $httpcode = curl_getinfo($crl, CURLINFO_HTTP_CODE);
+    curl_close($crl);
 
-    //if($httpcode == "200") {
-            //return $summoner;
-        //}
-        //else {
-            //return 0;
-        //}
-//}
+    if($httpcode == "200") {
+            return $summoner;
+        }
+        else {
+            return 0;
+        }
+}
 
 //include header for navigation
 require 'header.php';
@@ -118,7 +83,7 @@ require 'header.php';
         <div class='summoner_overview'>
         <?php
         $summoner = getSummoner();
-
+	$stats = getRank($summoner["id"]);
         if($summoner) {
             echo '<div class="summoner_title">';
                 echo "<img src='http://ddragon.leagueoflegends.com/cdn/9.5.1/img/profileicon/${summoner["profileIconId"]}.png' class='summoner_icon'/>";
