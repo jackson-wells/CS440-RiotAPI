@@ -16,7 +16,7 @@ function getChallengers() {
 	         FROM LeagueItem
 	         LEFT JOIN Summoners
 	         	ON LeagueItem.summonerName = Summoners.name
-	         WHERE leagueId = '6b64089f-e9b8-308d-926b-1bca75db4d98'
+	         WHERE leagueId = '974b70e3-28eb-3b60-9e9f-82a8efa19f10'
 	         ORDER BY leaguePoints DESC";
 	$statement = $pdo->prepare($query);
 	$statement->execute();
