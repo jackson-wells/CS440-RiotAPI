@@ -11,9 +11,7 @@ if(!isset($_SESSION["key"])) {
 }
 
 //getSummoner requests the api for information on the provided summoner name (comes from index.php)
-function getSummoner() {
-	$pdo = new PDO(getDBDsn(), getDBUser(), getDBPassword());
-        
+function getSummoner($pdo) {
     $query = "SELECT name, profileIcon, summonerLevel, accountId FROM Summoners WHERE name = :summonerName";
     $statement = $pdo->prepare($query);
     $statement->bindValue(":summonerName", $_POST["summoner"]);
@@ -47,42 +45,62 @@ function getSummoner() {
 	return 0;
 }
 
-function getSummonerIconURL() {
-        $iconID = "";
-        
-        $pdo = new PDO(getDBDsn(), getDBUser(), getDBPassword());
-        
-        $query = "SELECT profileIcon FROM Players WHERE summonerName = :summonerName";
-        $statement = $pdo->prepare($query);
-        $statement->bindValue(":summonerName", $_POST["summoner"]);
-        $statement->execute();
-        $results = $statement->fetchAll();
-        if(count($results) == 0)
-            $iconID = "";
-        else if(count($results) > 1)
-            $iconID = "";
-        else
-        	$iconID = $results[0]["profileIcon"];
+function addMatchToDB($pdo, $gameId)
+{
+	$key = $_SESSION["key"];
+	$url = "https://na1.api.riotgames.com/lol/match/v4/matches/$gameId?api_key=$key";
+	$crl = curl_init();
+	curl_setopt($crl, CURLOPT_URL, $url);
+	curl_setopt($crl, CURLOPT_RETURNTRANSFER, true);
+    $data = curl_exec($crl);
+	$httpcode = curl_getinfo($crl, CURLINFO_HTTP_CODE);
+	curl_close($crl);
 
-        return "http://ddragon.leagueoflegends.com/cdn/9.5.1/img/profileicon/$iconID.png";
+	if($httpcode != "200")
+		return;
+
+	$ch = curl_init("https://web.engr.oregonstate.edu/~hammockt/cs440/final_project/match.php");
+	curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+	curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+	$results = curl_exec($ch);
+	curl_close($ch);
 }
-function getMatchList($acct_id){
+
+function getMatchList($pdo, $acct_id) {
     $key = $_SESSION["key"];
 	$url = "https://na1.api.riotgames.com/lol/match/v4/matchlists/by-account/$acct_id?api_key=$key";
 	$crl = curl_init();
 	curl_setopt($crl, CURLOPT_URL, $url);
 	curl_setopt($crl, CURLOPT_RETURNTRANSFER, true);
     $data = curl_exec($crl);
-    $MatchList = json_decode($data, true);
+    $matches = json_decode($data, true);
 	$httpcode = curl_getinfo($crl, CURLINFO_HTTP_CODE);
 	curl_close($crl);
 
-	if($httpcode == "200") {
-			return $MatchList;
-		}
-		else {
-			return 0;
-		}
+	if($httpcode != "200")
+		return 0;
+	
+	$query = "SELECT gameId FROM Participants WHERE accountId = ? ORDER BY gameId DESC LIMIT 10";
+	$statement = $pdo->prepare($query);
+	$statement->bindValue(1, $acct_id);
+	$statement->execute();
+	$dbMatches = $statement->fetchAll();
+	$dbGameIds = array_column($dbMatches, "gameId");
+
+	for($i = 0; $i < count($matches["matches"]) && $i < 10; $i++)
+	{
+		$match = $matches["matches"][$i];
+		if(!in_array($match["gameId"], $dbGameIds))
+			addMatchToDB($pdo, $match["gameId"]);
+	}
+
+	$query = "SELECT * FROM Participants WHERE accountId = ? ORDER BY gameId DESC LIMIT 10";
+	$statement = $pdo->prepare($query);
+	$statement->bindValue(1, $acct_id);
+	$statement->execute();
+	$results = $statement->fetchAll();
+	return $results;
 }
 //Get Rank retrieves the summoners ranked information 
 // I believe you have to encode the summoner name in html url encoding for this to work, but im not sure
@@ -117,7 +135,8 @@ require 'header.php';
     <div class='stats_container'>
         <div class='summoner_overview'>
         <?php
-        $summoner = getSummoner();
+        $pdo = new PDO(getDBDsn(), getDBUser(), getDBPassword());
+        $summoner = getSummoner($pdo);
 
         if($summoner) {
             echo '<div class="summoner_title">';
@@ -126,33 +145,15 @@ require 'header.php';
                 echo "<div class='summoner_level'> Level: ${summoner["summonerLevel"]}</div>";
             echo '</div>';
 
-            $matchInfo = getMatchList($summoner["accountId"]);
+            $matches = getMatchList($pdo, $summoner["accountId"]);
             
             echo '<br><div class="summoner_matches">';
-            $counter = 1;
-            foreach($matchInfo as $matches){
-                foreach($matches as $basicInfo){
-                    echo '<div class="match_list">Game: '.$counter.'';
-                    foreach($basicInfo as $info => $match_values){
-                        switch($info) {
-                            case 'champion':
-                                $champ_id = $match_values;
-                                //$champ_icon = "http://ddragon.leagueoflegends.com/cdn/9.5.1/img/profileicon/$s_icon.png";
-                                echo '<div class="champion_id">Champion id: '.$champ_id.'</div>';
-                                break;
-                            case 'lane':
-                                $player_role = $match_values;
-                                echo '<div class="summoner_lane">Lane: '.$player_role.'</div>';
-                                break;
-                        }
-                    }
-                    $counter++;
-                    echo '</div><br>';
-                    if($counter > 20){
-                        break;
-                    }
-                    else{continue;}
-                } 
+            foreach($matches as $match)
+            {
+            	echo "<div class='match_list'>Game: ${match["gameId"]}</div>";
+            	echo "<div class='champion_id'>Champion id: ${match["championId"]}</div>";
+            	echo "<div class='summoner_lane'>Lane: ${match["role"]}</div>";
+            	echo "<br>";
             }
             echo '</div>';
         }
