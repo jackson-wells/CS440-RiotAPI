@@ -17,7 +17,7 @@ function getChallengers() {
 	         LEFT JOIN Summoners
 	         	ON LeagueItem.summonerName = Summoners.name
 	         WHERE leagueId = '6b64089f-e9b8-308d-926b-1bca75db4d98'
-	         ORDER BY leaderBoardRank";
+	         ORDER BY leaguePoints DESC";
 	$statement = $pdo->prepare($query);
 	$statement->execute();
 	$challengers = $statement->fetchAll();
@@ -66,14 +66,15 @@ require("header.php");
 	<title>Salty Lanes | Leaderboards</title>
 </head>
     <!-- The sortable class comes from sortable.js and is used to sort the table by its header -->
-    <div class='leaderboard_container'>
+    <div class='leaderboard_wrapper'>
         <div class='leaderboard_container'>
             <table class='sortable leaderboard'>
                 <?php
                     $challengers = getChallengers();
                     if($challengers) {
                         echo '<thead>
-                        			<th> Icon </th>
+                                    <th> Rank </th>
+                                    <th class="sorttable_nosort"></th>
                                     <th class="sorttable_nosort"> Summoner </th>
                                     <th> League Points </th>
                                     <th> Wins </th>
@@ -81,15 +82,25 @@ require("header.php");
                                     <th> Win Rate </th>
                                 </thead>
                                 <tbody>';
-
+                        $i = 0;
                         foreach($challengers as $summoner)
                         {
+                            $i += 1;
                         	echo '<tr class="single_challenger">';
-                        		echo "<td><img src='http://ddragon.leagueoflegends.com/cdn/9.5.1/img/profileicon/${summoner["profileIconId"]}.png' class='summoner_icon'/></td>";
-                                echo "<td><div><strong hidden>${summoner["name"]} </strong><form class='leaderboard_name_form' method='post' action='stats.php'>
-                                            <input hidden type='text' name='summoner' value='${summoner["name"]}'/>
-                                            <button type='submit' name='submit' id='submit'>${summoner["name"]}</button>
-                                        </form></div></td>";
+                                echo "<td><div>${i}</div></td>";
+                            echo "
+                                        <td class='ci_wrapper'>
+                                            <img src='http://ddragon.leagueoflegends.com/cdn/9.5.1/img/profileicon/${summoner["profileIconId"]}.png' class='summoner_icon'/>
+                                        </td>
+                                <td class='summoner_n_icon'>
+                                        <div class='cs_wrapper'>
+                                            <strong hidden>${summoner["name"]} </strong>
+                                            <form class='leaderboard_name_form' method='post' action='stats.php'>
+                                                <input hidden type='text' name='summoner' value='${summoner["name"]}'/>
+                                                <button type='submit' name='submit' id='submit'>${summoner["name"]}</button>
+                                            </form>
+                                        </div>
+                                    </td>";
                                 echo "<td><div>${summoner["leaguePoints"]}</div></td>";
                                 echo "<td><div>${summoner["wins"]}</div></td>";
                                 echo "<td><div>${summoner["losses"]}</div></td>";

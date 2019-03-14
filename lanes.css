@@ -24,11 +24,9 @@ body {
     margin-bottom: 1em;
     background-color: whitesmoke;
     height: 100%;
+    font-family: Helvetica;
 }
 
-html {
-    height: 100%;
-}
 
 /*****Header File *****/
 
@@ -41,7 +39,7 @@ html {
 
 .table_header {
     border-collapse:collapse;
-    background-color:rgb(211,211,211);
+    background-color:#333;
     padding: 10px;
     border-bottom: 1px solid rgb(205,205,205);
 }
@@ -54,10 +52,11 @@ html {
 .table_span h1 {
     display: inline-block;
     padding: 0px 15px 0px 15px;
-    border-left: 1px solid black;
+    border-left: 1px solid #FFF;
     height: 50;
     margin: 0px;
     font-weight: normal;
+    color: #FFF;
 }
 
 .table_span a:hover {
@@ -220,10 +219,14 @@ box-shadow:
 }
 
 /******Leaderboards******/
+.leaderboard_wrapper {
+    background-color: #DDD;
+}
 
 .leaderboard_container {
+    box-shadow: 0px 2px 10px -1px rgba(0,0,0,0.75);
     width: 80%;
-    background-color:rgb(230,230,230);
+    background-color: #EEE;
     position: relative;
     left: 10%;
     min-height: 900px;
@@ -250,17 +253,16 @@ box-shadow:
 
 .single_challenger {
     box-shadow: 0px 5px 5px -5px rgba(0,0,0,0.75);
-}
-.single_challenger td {
-    padding: 0;
-}
-.single_challenger td div {
-    padding: 1.25em 0; 
-    margin-top: .5em;
     border-style: solid;
     border-color: black;
-    border-width: 1px 0;
+    border-width: 1px 0px;
 }
+
+.single_challenger td {
+    padding: .3em 0em;
+}
+
+
 .single_challenger td:first-child div {
     border-left-width: 1px;
 }
@@ -269,8 +271,13 @@ box-shadow:
     border-right-width: 1px;
 }
 
-.single_challenger_icon {
-    
+.summoner_challenger_icon {
+    width: 3em;
+    height: 3em;
+    border-radius: 2em;
+    background-color: blue;
+    text-align: center;
+    display: inline-block;
 }
 
 /***** Logout/footer*****/
