@@ -12,6 +12,16 @@ if(!isset($_SESSION["key"])) {
 
 //getSummoner requests the api for information on the provided summoner name (comes from index.php)
 function getSummoner() {
+	$pdo = new PDO(getDBDsn(), getDBUser(), getDBPassword());
+        
+    $query = "SELECT name, profileIcon, summonerLevel, accountId FROM Summoners WHERE name = :summonerName";
+    $statement = $pdo->prepare($query);
+    $statement->bindValue(":summonerName", $_POST["summoner"]);
+    $statement->execute();
+    $results = $statement->fetchAll();
+    if(count($results) > 0)
+    	return $results[0];
+
 	$key = $_SESSION["key"];
     $name = rawurlencode($_POST["summoner"]);
 	$url = "https://na1.api.riotgames.com/lol/summoner/v4/summoners/by-name/$name?api_key=$key";
@@ -24,11 +34,17 @@ function getSummoner() {
 	curl_close($crl);
 
 	if($httpcode == "200") {
-			return $summoner;
-		}
-		else {
-			return 0;
-		}
+		$ch = curl_init("https://web.engr.oregonstate.edu/~hammockt/cs440/final_project/summoner.php");
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+		curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		$result = curl_exec($ch);
+		curl_close($ch);
+	
+		return $summoner;
+	}
+
+	return 0;
 }
 
 function getSummonerIconURL() {
@@ -102,7 +118,6 @@ require 'header.php';
         <div class='summoner_overview'>
         <?php
         $summoner = getSummoner();
-        $iconURL = getSummonerIconURL();
 
         if($summoner) {
             echo '<div class="summoner_title">';
