@@ -106,36 +106,18 @@ require 'header.php';
 
         if($summoner) {
             echo '<div class="summoner_title">';
-            foreach($summoner as $summoner_key => $summoner_value) {
-                switch($summoner_key) {
-                    case 'profileIconId':
-                        $s_icon = $summoner_value;
-                        $s_icon = "http://ddragon.leagueoflegends.com/cdn/9.5.1/img/profileicon/$s_icon.png";
-                        break;
-                    case 'name':
-                        $s_name = $summoner_value;
-                        break;
-                    case 'summonerLevel':
-                        $s_lvl = $summoner_value;
-                        break;
-                    case 'accountId':
-                        $s_id = $summoner_value;
-                        break;
-                
-                }
-            }
-                echo "<img src='$s_icon' class='summoner_icon'/>";
-                echo '<div class="summoner_name">'.$s_name.'</div>';
-                echo '<div class="summoner_level"> Level: '.$s_lvl.'</div>';
+                echo "<img src='http://ddragon.leagueoflegends.com/cdn/9.5.1/img/profileicon/${summoner["profileIconId"]}.png' class='summoner_icon'/>";
+                echo "<div class='summoner_name'>${summoner["name"]}</div>";
+                echo "<div class='summoner_level'> Level: ${summoner["summonerLevel"]}</div>";
             echo '</div>';
 
-            $matchInfo = getMatchList($s_id);
+            $matchInfo = getMatchList($summoner["accountId"]);
             
-            echo '<div class="summoner_matches">';
+            echo '<br><div class="summoner_matches">';
             $counter = 1;
             foreach($matchInfo as $matches){
                 foreach($matches as $basicInfo){
-                    echo '<div class="match_list">Game:'.$counter.'';
+                    echo '<div class="match_list">Game: '.$counter.'';
                     foreach($basicInfo as $info => $match_values){
                         switch($info) {
                             case 'champion':
