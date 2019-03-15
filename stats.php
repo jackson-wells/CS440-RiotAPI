@@ -89,7 +89,7 @@ function getMatchList($pdo, $acct_id) {
 			addMatchToDB($pdo, $match["gameId"]);
 	}
 
-	$query = "SELECT * FROM Participants WHERE accountId = ? ORDER BY gameId DESC LIMIT 10";
+	$query = "SELECT Participants.*, gameDuration FROM Participants INNER JOIN Matches ON Participants.gameId = Matches.gameId WHERE accountId = ? ORDER BY gameId DESC LIMIT 10";
 	$statement = $pdo->prepare($query);
 	$statement->bindValue(1, $acct_id);
 	$statement->execute();
@@ -149,9 +149,19 @@ require 'header.php';
             echo '<br><div class="summoner_matches">';
             foreach($matches as $match)
             {
-            	echo "<div class='match_list'>Game: ${match["gameId"]}</div>";
-            	echo "<div class='champion_id'>Champion id: ${match["championId"]}</div>";
-            	echo "<div class='summoner_lane'>Lane: ${match["role"]}</div>";
+            	echo "<div class='match_list'>";
+            		echo "<div>Match ID: ${match["gameId"]}</div>";
+            		if ($match["win"] == 1) {
+		        		echo "<div>Victory!</div>";
+            		} else {
+            			echo "<div>Defeat</div>";
+            		}
+
+		        	echo "<div>KDA: ${match["kills"]}/${match["deaths"]}/${match["assists"]}</div>";
+		        	echo "<div class='summoner_lane'>Lane: ${match["lane"]}</div>";
+		        	echo "<div>Role: ${match["role"]}</div>";
+		        	echo "<div>Game Duration: ".gmdate("H:i:s", $match["gameDuration"])."</div>";
+            	echo "</div>";
             	echo "<br>";
             }
             echo '</div>';
